@@ -1,9 +1,7 @@
 name: Create Video
-
 on:
   repository_dispatch:
     types: [create-video]
-
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -11,8 +9,20 @@ jobs:
       - name: Download audio and image
         run: |
           mkdir -p tmp
-          curl -L "${{ github.event.client_payload.audioUrl }}" -o tmp/audio.mp3
-          curl -L "${{ github.event.client_payload.imageUrl }}" -o tmp/image.jpg
+          echo "Downloading audio..."
+          audioUrl="${{ github.event.client_payload.audioUrl }}"
+          # URL-encode the audio URL
+          audioUrl=$(echo "$audioUrl" | sed 's/ /%20/g')
+          curl -L "$audioUrl" -o tmp/audio.mp3
+          
+          echo "Downloading image..."
+          imageUrl="${{ github.event.client_payload.imageUrl }}"
+          # URL-encode the image URL
+          imageUrl=$(echo "$imageUrl" | sed 's/ /%20/g')
+          curl -L "$imageUrl" -o tmp/image.jpg
+          
+          echo "Files in tmp directory:"
+          ls -la tmp/
       
       - name: Install FFmpeg
         run: sudo apt-get update && sudo apt-get install -y ffmpeg
