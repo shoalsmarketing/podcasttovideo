@@ -19,7 +19,7 @@ jobs:
       
       - name: Create video
         run: |
-          ffmpeg -loop 1 -i tmp/image.jpg -i tmp/audio.mp3 -c:v libx264 -tune stillimage -c:a aac -b:a 192k -shortest tmp/output.mp4
+          ffmpeg -loop 1 -i tmp/image.jpg -i tmp/audio.mp3 -c:v libx264 -tune stillimage -c:a aac -b:a 192k -shortest "tmp/${{ github.event.client_payload.outputFilename }}.mp4"
           ls -la tmp/
       
       - name: Upload to S3
